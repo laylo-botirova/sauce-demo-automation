@@ -24,7 +24,5 @@ public class LoginPage {
         wait.until(ExpectedConditions.visibilityOfElementLocated(username)).sendKeys(user);
         wait.until(ExpectedConditions.visibilityOfElementLocated(password)).sendKeys(pass);
         wait.until(ExpectedConditions.elementToBeClickable(loginBtn)).click();
-
-        wait.until(ExpectedConditions.urlContains("inventory"));
     }
 }

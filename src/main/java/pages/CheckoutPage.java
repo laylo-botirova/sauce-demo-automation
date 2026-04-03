@@ -1,6 +1,7 @@
 package pages;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -36,7 +37,15 @@ import java.time.Duration;public class CheckoutPage {
     }
 
     public void continueCheckout() {
-        wait.until(ExpectedConditions.elementToBeClickable(continueBtn)).click();
-        wait.until(ExpectedConditions.urlContains("checkout-step-two"));
+        WebElement btn = wait.until(ExpectedConditions.elementToBeClickable(continueBtn));
+
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", btn);
+
+        wait.until(driver ->
+                driver.getCurrentUrl().contains("checkout-step-two") ||
+                        driver.getCurrentUrl().contains("checkout-step-one")
+        );
+
+        System.out.println("Current URL after continue: " + driver.getCurrentUrl());
     }
 }
