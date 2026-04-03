@@ -24,14 +24,27 @@ public class CheckoutPage {
     }
 
     public void fillInfo(String fn, String ln, String zc) {
-        wait.until(ExpectedConditions.visibilityOfElementLocated(firstName)).sendKeys(fn);
-        wait.until(ExpectedConditions.visibilityOfElementLocated(lastName)).sendKeys(ln);
-        wait.until(ExpectedConditions.visibilityOfElementLocated(zip)).sendKeys(zc);
+        WebElement first = wait.until(ExpectedConditions.visibilityOfElementLocated(firstName));
+        WebElement last = wait.until(ExpectedConditions.visibilityOfElementLocated(lastName));
+        WebElement postal = wait.until(ExpectedConditions.visibilityOfElementLocated(zip));
+
+        first.clear();
+        first.sendKeys(fn);
+
+        last.clear();
+        last.sendKeys(ln);
+
+        postal.clear();
+        postal.sendKeys(zc);
+
+        wait.until(d -> first.getAttribute("value").equals(fn));
+        wait.until(d -> last.getAttribute("value").equals(ln));
+        wait.until(d -> postal.getAttribute("value").equals(zc));
     }
 
     public void continueCheckout() {
         WebElement btn = wait.until(ExpectedConditions.elementToBeClickable(continueBtn));
-
+        System.out.println("URL before click: " + driver.getCurrentUrl());
         btn.click();
 
         wait.until(ExpectedConditions.or(
@@ -39,9 +52,12 @@ public class CheckoutPage {
                 ExpectedConditions.visibilityOfElementLocated(By.cssSelector("[data-test='error']"))
         ));
 
+        System.out.println("URL after click: " + driver.getCurrentUrl());
+
         if (!driver.findElements(By.cssSelector("[data-test='error']")).isEmpty()) {
-            throw new RuntimeException("Checkout failed: " +
-                    driver.findElement(By.cssSelector("[data-test='error']")).getText());
+            String error = driver.findElement(By.cssSelector("[data-test='error']")).getText();
+            System.out.println("Checkout ERROR: " + error);
+            throw new RuntimeException("Checkout failed: " + error);
         }
         }
 }
