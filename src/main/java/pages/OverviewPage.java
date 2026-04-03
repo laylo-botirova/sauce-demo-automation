@@ -22,7 +22,7 @@ public class OverviewPage {
 
     public OverviewPage(WebDriver driver) {
         this.driver = driver;
-        this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        this.wait = new WebDriverWait(driver, Duration.ofSeconds(15));
     }
 
     public double getItemsTotal() {

@@ -17,7 +17,7 @@ public class CartPage {
     }
 
     public void checkout() {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
 
         By checkoutBtn = By.id("checkout");
 

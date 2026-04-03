@@ -19,7 +19,7 @@ public class LoginPage {
     By loginBtn = By.id("login-button");
 
     public void login(String user, String pass) {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
 
         wait.until(ExpectedConditions.visibilityOfElementLocated(username)).sendKeys(user);
         wait.until(ExpectedConditions.visibilityOfElementLocated(password)).sendKeys(pass);

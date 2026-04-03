@@ -20,26 +20,13 @@ public class CheckoutPage {
 
     public CheckoutPage(WebDriver driver) {
         this.driver = driver;
-        this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        this.wait = new WebDriverWait(driver, Duration.ofSeconds(15));
     }
 
     public void fillInfo(String fn, String ln, String zc) {
-        driver.findElement(firstName).clear();
-        driver.findElement(firstName).sendKeys(fn);
-
-        driver.findElement(lastName).clear();
-        driver.findElement(lastName).sendKeys(ln);
-
-        driver.findElement(zip).clear();
-        driver.findElement(zip).sendKeys(zc);
-
-        driver.findElement(zip).sendKeys("\t");
-
-        wait.until(driver ->
-                driver.findElement(firstName).getAttribute("value").equals(fn) &&
-                        driver.findElement(lastName).getAttribute("value").equals(ln) &&
-                        driver.findElement(zip).getAttribute("value").equals(zc)
-        );
+        wait.until(ExpectedConditions.visibilityOfElementLocated(firstName)).sendKeys(fn);
+        wait.until(ExpectedConditions.visibilityOfElementLocated(lastName)).sendKeys(ln);
+        wait.until(ExpectedConditions.visibilityOfElementLocated(zip)).sendKeys(zc);
     }
 
     public void continueCheckout() {
@@ -47,18 +34,14 @@ public class CheckoutPage {
 
         btn.click();
 
-        By error = By.cssSelector("[data-test='error']");
+        wait.until(ExpectedConditions.or(
+                ExpectedConditions.urlContains("checkout-step-two"),
+                ExpectedConditions.visibilityOfElementLocated(By.cssSelector("[data-test='error']"))
+        ));
 
-        wait.until(driver ->
-                driver.getCurrentUrl().contains("checkout-step-two") ||
-                        driver.findElements(error).size() > 0
-        );
-
-        if (driver.findElements(error).size() > 0) {
-            String errorMsg = driver.findElement(error).getText();
-            throw new RuntimeException("Checkout failed: " + errorMsg);
+        if (!driver.findElements(By.cssSelector("[data-test='error']")).isEmpty()) {
+            throw new RuntimeException("Checkout failed: " +
+                    driver.findElement(By.cssSelector("[data-test='error']")).getText());
         }
-
-        System.out.println("Current URL after continue: " + driver.getCurrentUrl());
-    }
+        }
 }

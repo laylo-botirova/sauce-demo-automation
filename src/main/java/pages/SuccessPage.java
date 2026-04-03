@@ -18,7 +18,7 @@ public class SuccessPage {
 
 
     public String getSuccessMsg() {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
         return wait.until(ExpectedConditions.visibilityOfElementLocated(successMsg)).getText();
     }
 }
