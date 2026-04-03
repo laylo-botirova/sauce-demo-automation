@@ -1,13 +1,14 @@
 package pages;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.time.Duration;public class CheckoutPage {
+import java.time.Duration;
+
+public class CheckoutPage {
 
     WebDriver driver;
     WebDriverWait wait;
@@ -23,28 +24,40 @@ import java.time.Duration;public class CheckoutPage {
     }
 
     public void fillInfo(String fn, String ln, String zc) {
-        WebElement fnEl = wait.until(ExpectedConditions.elementToBeClickable(firstName));
-        fnEl.clear();
-        fnEl.sendKeys(fn);
+        driver.findElement(firstName).clear();
+        driver.findElement(firstName).sendKeys(fn);
 
-        WebElement lnEl = wait.until(ExpectedConditions.elementToBeClickable(lastName));
-        lnEl.clear();
-        lnEl.sendKeys(ln);
+        driver.findElement(lastName).clear();
+        driver.findElement(lastName).sendKeys(ln);
 
-        WebElement zipEl = wait.until(ExpectedConditions.elementToBeClickable(zip));
-        zipEl.clear();
-        zipEl.sendKeys(zc);
+        driver.findElement(zip).clear();
+        driver.findElement(zip).sendKeys(zc);
+
+        driver.findElement(zip).sendKeys("\t");
+
+        wait.until(driver ->
+                driver.findElement(firstName).getAttribute("value").equals(fn) &&
+                        driver.findElement(lastName).getAttribute("value").equals(ln) &&
+                        driver.findElement(zip).getAttribute("value").equals(zc)
+        );
     }
 
     public void continueCheckout() {
         WebElement btn = wait.until(ExpectedConditions.elementToBeClickable(continueBtn));
 
-        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", btn);
+        btn.click();
+
+        By error = By.cssSelector("[data-test='error']");
 
         wait.until(driver ->
                 driver.getCurrentUrl().contains("checkout-step-two") ||
-                        driver.getCurrentUrl().contains("checkout-step-one")
+                        driver.findElements(error).size() > 0
         );
+
+        if (driver.findElements(error).size() > 0) {
+            String errorMsg = driver.findElement(error).getText();
+            throw new RuntimeException("Checkout failed: " + errorMsg);
+        }
 
         System.out.println("Current URL after continue: " + driver.getCurrentUrl());
     }

@@ -22,22 +22,23 @@ public class ProductsPage {
         String xpath = "//div[text()='" + productName + "']/ancestor::div[@class='inventory_item']//button";
         By locator = By.xpath(xpath);
 
-        WebElement btn = wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
+        WebElement btn = wait.until(ExpectedConditions.presenceOfElementLocated(locator));
 
         ((JavascriptExecutor) driver).executeScript(
                 "arguments[0].scrollIntoView({block:'center'});", btn
         );
 
-        wait.until(ExpectedConditions.elementToBeClickable(btn)).click();
+        WebElement clickableBtn = wait.until(ExpectedConditions.elementToBeClickable(locator));
+
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", clickableBtn);
     }
 
     public void goToCart() {
         By cartLocator = By.className("shopping_cart_link");
 
         WebElement cartBtn = wait.until(
-                ExpectedConditions.visibilityOfElementLocated(cartLocator));
+                ExpectedConditions.elementToBeClickable(cartLocator));
 
-        wait.until(ExpectedConditions.elementToBeClickable(cartBtn));
         ((JavascriptExecutor) driver).executeScript(
                 "arguments[0].click();", cartBtn
         );

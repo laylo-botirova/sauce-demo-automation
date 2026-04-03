@@ -1,6 +1,7 @@
 package pages;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -25,8 +26,8 @@ public class OverviewPage {
     }
 
     public double getItemsTotal() {
-        wait.until(ExpectedConditions.visibilityOfElementLocated(itemPrices));
-        List<WebElement> prices = driver.findElements(itemPrices);
+        wait.until(ExpectedConditions.urlContains("checkout-step-two"));
+        wait.until(ExpectedConditions.numberOfElementsToBeMoreThan(itemPrices, 0));        List<WebElement> prices = driver.findElements(itemPrices);
         double sum = 0;
         for (WebElement price : prices) {
             sum += Double.parseDouble(price.getText().replace("$", ""));
@@ -50,6 +51,7 @@ public class OverviewPage {
     }
 
     public void clickFinish() {
-        wait.until(ExpectedConditions.elementToBeClickable(finishBtn)).click();
+        WebElement btn = wait.until(ExpectedConditions.visibilityOfElementLocated(finishBtn));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", btn);
     }
 }
